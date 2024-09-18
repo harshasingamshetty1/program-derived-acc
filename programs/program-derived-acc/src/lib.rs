@@ -31,10 +31,15 @@ pub struct CreateEscrow<'info> {
         // State account seed uses the string "state" and the users' key. 
         // Note that we can only have 1 active transaction
         seeds = [b"escrow".as_ref(), from.key().as_ref(), to.key().as_ref()],
+        // This is used when the PDA account falls on the ed25519 curve line  (which is not intended)
+        // The accounts on the curve will have both the Pub/private key
+        // Where as the PDA accounts should not have any private key and needs to be signed/operated through the Programs
         bump,
         payer = from,
         space = size_of::<EscrowAccount>() + 16
     )]
+    // As this struct holds the data we want to store of the contract
+    // Therefore, this means we are creating a  PDA account
     pub escrow: Account<'info, EscrowAccount>,
 
     #[account(mut)]
